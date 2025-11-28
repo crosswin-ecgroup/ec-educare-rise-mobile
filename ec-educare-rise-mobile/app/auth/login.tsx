@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Alert, ScrollView, Image } from 'react-native';
+import { View, Text, TextInput, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { PrimaryButton } from '../../components/PrimaryButton';
 import { AuthCard } from '../../components/AuthCard';
 import { LoadingOverlay } from '../../components/LoadingOverlay';
+import { CustomAlert } from '../../components/CustomAlert';
 import { loginWithPassword } from '../../utils/oauth';
 import { useAuthStore } from '../../store/auth.store';
 import { useSendTelegramOtpMutation, useVerifyTelegramOtpMutation } from '../../services/auth.api';
@@ -14,14 +16,30 @@ export default function Login() {
     const [showOtpInput, setShowOtpInput] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+
+    const [alertConfig, setAlertConfig] = useState({
+        visible: false,
+        title: '',
+        message: '',
+        type: 'error' as 'error' | 'success' | 'info'
+    });
 
     const setAuth = useAuthStore((state) => state.setAuth);
     const [sendOtp] = useSendTelegramOtpMutation();
     const [verifyOtp] = useVerifyTelegramOtpMutation();
 
+    const showAlert = (title: string, message: string, type: 'error' | 'success' | 'info' = 'error') => {
+        setAlertConfig({ visible: true, title, message, type });
+    };
+
+    const hideAlert = () => {
+        setAlertConfig(prev => ({ ...prev, visible: false }));
+    };
+
     const handlePasswordLogin = async () => {
         if (!username || !password) {
-            Alert.alert('Error', 'Please enter username and password');
+            showAlert('Error', 'Please enter username and password');
             return;
         }
         setIsLoading(true);
@@ -29,7 +47,7 @@ export default function Login() {
             const tokens = await loginWithPassword(username, password);
             setAuth(tokens.access_token, tokens.refresh_token, null);
         } catch (error: any) {
-            Alert.alert('Login Failed', error.message);
+            showAlert('Login Failed', error.message);
         } finally {
             setIsLoading(false);
         }
@@ -37,16 +55,16 @@ export default function Login() {
 
     const handleTelegramLogin = async () => {
         if (!phoneNumber) {
-            Alert.alert('Error', 'Please enter your phone number');
+            showAlert('Error', 'Please enter your phone number');
             return;
         }
         setIsLoading(true);
         try {
             await sendOtp({ phoneNumber }).unwrap();
             setShowOtpInput(true);
-            Alert.alert('Success', 'OTP sent to your Telegram');
+            showAlert('Success', 'OTP sent to your Telegram', 'success');
         } catch (error: any) {
-            Alert.alert('Error', 'Failed to send OTP');
+            showAlert('Error', 'Failed to send OTP');
         } finally {
             setIsLoading(false);
         }
@@ -54,7 +72,7 @@ export default function Login() {
 
     const handleVerifyOtp = async () => {
         if (!otp) {
-            Alert.alert('Error', 'Please enter the OTP');
+            showAlert('Error', 'Please enter the OTP');
             return;
         }
         setIsLoading(true);
@@ -62,7 +80,7 @@ export default function Login() {
             const result = await verifyOtp({ phoneNumber, otp }).unwrap();
             setAuth(result.access_token, result.refresh_token, result.user);
         } catch (error: any) {
-            Alert.alert('Error', 'Invalid OTP');
+            showAlert('Error', 'Invalid OTP');
         } finally {
             setIsLoading(false);
         }
@@ -72,6 +90,14 @@ export default function Login() {
         <ScrollView contentContainerClassName="flex-grow items-center justify-center bg-gray-50 p-4">
             {isLoading && <LoadingOverlay message="Authenticating..." />}
 
+            <CustomAlert
+                visible={alertConfig.visible}
+                title={alertConfig.title}
+                message={alertConfig.message}
+                type={alertConfig.type}
+                onClose={hideAlert}
+            />
+
             <View className="mb-8 items-center">
                 <Image
                     source={require('../../assets/images/logo.jpg')}
@@ -79,7 +105,6 @@ export default function Login() {
                     resizeMode="contain"
                 />
                 <Text className="text-3xl font-bold text-blue-800">EC Edu Care</Text>
-                <Text className="text-gray-600 mt-2">Rise Mobile App</Text>
             </View>
 
             <AuthCard title="Welcome Back">
@@ -90,13 +115,21 @@ export default function Login() {
                     onChangeText={setUsername}
                     autoCapitalize="none"
                 />
-                <TextInput
-                    className="bg-gray-100 border border-gray-300 rounded-lg p-3 mb-4"
-                    placeholder="Password"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry
-                />
+
+                <View className="flex-row items-center bg-gray-100 border border-gray-300 rounded-lg mb-4 pr-3">
+                    <TextInput
+                        className="flex-1 p-3 text-gray-900"
+                        placeholder="Password"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry={!showPassword}
+                        placeholderTextColor="#9CA3AF"
+                    />
+                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                        <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={22} color="#6B7280" />
+                    </TouchableOpacity>
+                </View>
+
                 <PrimaryButton title="Login" onPress={handlePasswordLogin} />
 
                 <View className="my-6 flex-row items-center">
