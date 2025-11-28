@@ -10,7 +10,44 @@ export const CLIENT_ID = process.env.EXPO_PUBLIC_CLIENT_ID || 'ec-educare-mobile
 export const REDIRECT_URI = makeRedirectUri({
     scheme: 'com.eceducare.app'
 });
+export const CLIENT_SECRET = process.env.EXPO_PUBLIC_CLIENT_SECRET || '';
 export const SCOPES = process.env.EXPO_PUBLIC_SCOPES || 'openid profile email roles offline_access educare.api';
+
+export async function loginWithPassword(username: string, password: string): Promise<any> {
+    const params = new URLSearchParams({
+        client_id: CLIENT_ID,
+        grant_type: 'password',
+        username: username,
+        password: password,
+        scope: SCOPES,
+    });
+
+    console.log('[Auth] Attempting password login:', {
+        url: `${IDENTITY_SERVER_URL}/connect/token`,
+        clientId: CLIENT_ID,
+        hasSecret: !!CLIENT_SECRET,
+        scope: SCOPES
+    });
+
+    if (CLIENT_SECRET) {
+        params.append('client_secret', CLIENT_SECRET);
+    }
+
+    const response = await fetch(`${IDENTITY_SERVER_URL}/connect/token`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: params.toString(),
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Login failed: ${response.status} ${errorText}`);
+    }
+
+    return await response.json();
+}
 
 export async function generateCodeVerifier(): Promise<string> {
     // Generate a random string
@@ -92,6 +129,10 @@ export async function refreshAccessToken(refreshToken: string): Promise<any> {
         grant_type: 'refresh_token',
         refresh_token: refreshToken,
     });
+
+    if (CLIENT_SECRET) {
+        params.append('client_secret', CLIENT_SECRET);
+    }
 
     const response = await fetch(`${IDENTITY_SERVER_URL}/connect/token`, {
         method: 'POST',

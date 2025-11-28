@@ -1,72 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Alert, ScrollView } from 'react-native';
-import { useAuthRequest, makeRedirectUri, ResponseType } from 'expo-auth-session';
-import * as WebBrowser from 'expo-web-browser';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Alert, ScrollView, Image } from 'react-native';
 import { PrimaryButton } from '../../components/PrimaryButton';
 import { AuthCard } from '../../components/AuthCard';
 import { LoadingOverlay } from '../../components/LoadingOverlay';
-import {
-    IDENTITY_SERVER_URL,
-    CLIENT_ID,
-    SCOPES,
-    exchangeCodeForToken,
-    generateCodeVerifier,
-    generateCodeChallenge
-} from '../../utils/oauth';
+import { loginWithPassword } from '../../utils/oauth';
 import { useAuthStore } from '../../store/auth.store';
 import { useSendTelegramOtpMutation, useVerifyTelegramOtpMutation } from '../../services/auth.api';
-
-WebBrowser.maybeCompleteAuthSession();
-
-const discovery = {
-    authorizationEndpoint: `${IDENTITY_SERVER_URL}/connect/authorize`,
-    tokenEndpoint: `${IDENTITY_SERVER_URL}/connect/token`,
-    revocationEndpoint: `${IDENTITY_SERVER_URL}/connect/revocation`,
-};
 
 export default function Login() {
     const [isLoading, setIsLoading] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState('');
     const [otp, setOtp] = useState('');
     const [showOtpInput, setShowOtpInput] = useState(false);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
     const setAuth = useAuthStore((state) => state.setAuth);
     const [sendOtp] = useSendTelegramOtpMutation();
     const [verifyOtp] = useVerifyTelegramOtpMutation();
 
-    // PKCE Setup
-    const [request, response, promptAsync] = useAuthRequest(
-        {
-            clientId: CLIENT_ID,
-            scopes: SCOPES.split(' '),
-            redirectUri: makeRedirectUri({
-                scheme: 'com.eceducare.app'
-            }),
-            responseType: ResponseType.Code,
-            usePKCE: true,
-        },
-        discovery
-    );
-
-    useEffect(() => {
-        if (response?.type === 'success') {
-            const { code, codeVerifier } = response.params; // expo-auth-session handles verifier generation internally if usePKCE is true?
-            // Wait, if usePKCE is true, expo-auth-session handles the challenge and verifier.
-            // But we need to pass the verifier to the token exchange if we do it manually.
-            // request.codeVerifier is available.
-
-            handleCodeExchange(code, request?.codeVerifier);
-        } else if (response?.type === 'error') {
-            Alert.alert('Authentication Error', response.error?.message);
+    const handlePasswordLogin = async () => {
+        if (!username || !password) {
+            Alert.alert('Error', 'Please enter username and password');
+            return;
         }
-    }, [response]);
-
-    const handleCodeExchange = async (code: string, verifier?: string) => {
-        if (!verifier) return;
         setIsLoading(true);
         try {
-            const tokens = await exchangeCodeForToken(code, verifier);
-            setAuth(tokens.access_token, tokens.refresh_token, null); // We can fetch user info later
+            const tokens = await loginWithPassword(username, password);
+            setAuth(tokens.access_token, tokens.refresh_token, null);
         } catch (error: any) {
             Alert.alert('Login Failed', error.message);
         } finally {
@@ -112,16 +73,31 @@ export default function Login() {
             {isLoading && <LoadingOverlay message="Authenticating..." />}
 
             <View className="mb-8 items-center">
+                <Image
+                    source={require('../../assets/images/logo.jpg')}
+                    className="w-32 h-32 mb-4 rounded-full"
+                    resizeMode="contain"
+                />
                 <Text className="text-3xl font-bold text-blue-800">EC EduCare</Text>
                 <Text className="text-gray-600 mt-2">Rise Mobile App</Text>
             </View>
 
             <AuthCard title="Welcome Back">
-                <PrimaryButton
-                    title="Sign in with IdentityServer"
-                    onPress={() => promptAsync()}
-                    disabled={!request}
+                <TextInput
+                    className="bg-gray-100 border border-gray-300 rounded-lg p-3 mb-4"
+                    placeholder="Username"
+                    value={username}
+                    onChangeText={setUsername}
+                    autoCapitalize="none"
                 />
+                <TextInput
+                    className="bg-gray-100 border border-gray-300 rounded-lg p-3 mb-4"
+                    placeholder="Password"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                />
+                <PrimaryButton title="Login" onPress={handlePasswordLogin} />
 
                 <View className="my-6 flex-row items-center">
                     <View className="flex-1 h-px bg-gray-300" />

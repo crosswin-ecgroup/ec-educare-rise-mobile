@@ -29,8 +29,12 @@ Cross-platform mobile application for EC EduCare using React Native (Expo).
    - Redirect URI: `com.eceducare.app://` (or `com.eceducare.app:/` depending on strictness)
    - Scopes: `openid profile email roles offline_access educare.api`
    - PKCE enabled.
+   - For Password Login (ROPC), ensure the client allows `password` grant type.
 
-4. **Run the App**:
+5. **Environment Variables**:
+   Add `EXPO_PUBLIC_CLIENT_SECRET` if your client is confidential (not recommended for mobile) or requires it for ROPC.
+
+6. **Run the App**:
    ```bash
    npm start
    ```
