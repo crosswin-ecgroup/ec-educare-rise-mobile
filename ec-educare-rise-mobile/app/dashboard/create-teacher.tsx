@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useCreateTeacherMutation } from '../../services/classes.api';
+import { LoadingOverlay } from '../../components/LoadingOverlay';
 import { PrimaryButton } from '../../components/PrimaryButton';
 import { CustomAlert } from '../../components/CustomAlert';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,6 +17,19 @@ export default function CreateTeacher() {
     const [qualification, setQualification] = useState('');
     const [experience, setExperience] = useState('');
     const [address, setAddress] = useState('');
+    const [showSubjectPicker, setShowSubjectPicker] = useState(false);
+    const [showQualificationPicker, setShowQualificationPicker] = useState(false);
+
+    const SUBJECTS = [
+        'Mathematics', 'Science', 'English', 'History', 'Geography',
+        'Physics', 'Chemistry', 'Biology', 'Computer Science', 'Art',
+        'Music', 'Physical Education'
+    ];
+
+    const QUALIFICATIONS = [
+        'B.Ed', 'M.Ed', 'B.Sc', 'M.Sc', 'B.A', 'M.A',
+        'Ph.D', 'Diploma', 'Other'
+    ];
 
     const [alertConfig, setAlertConfig] = useState({
         visible: false,
@@ -34,6 +49,10 @@ export default function CreateTeacher() {
         }
     };
 
+    const [createTeacher, { isLoading }] = useCreateTeacherMutation();
+
+    // ... existing state ...
+
     const handleCreate = async () => {
         // Validation
         if (!name.trim()) {
@@ -44,14 +63,19 @@ export default function CreateTeacher() {
             showAlert('Validation Error', 'Please enter teacher email', 'error');
             return;
         }
-        if (!subject.trim()) {
-            showAlert('Validation Error', 'Please enter subject specialization', 'error');
-            return;
-        }
 
-        // TODO: Implement API call to create teacher
-        // For now, just show success
-        showAlert('Success', 'Teacher created successfully!', 'success');
+        try {
+            await createTeacher({
+                fullName: name,
+                email,
+                mobileNumber: phone || undefined,
+                password: 'DefaultPassword123!',
+            }).unwrap();
+            showAlert('Success', 'Teacher created successfully!', 'success');
+        } catch (error: any) {
+            console.error('Failed to create teacher:', error);
+            showAlert('Error', 'Failed to create teacher. Please try again.', 'error');
+        }
     };
 
     return (
@@ -61,6 +85,7 @@ export default function CreateTeacher() {
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
             >
+                {isLoading && <LoadingOverlay message="Creating Teacher..." />}
                 <CustomAlert
                     visible={alertConfig.visible}
                     title={alertConfig.title}
@@ -93,6 +118,10 @@ export default function CreateTeacher() {
                             onChangeText={setName}
                         />
 
+
+
+                        // ... existing code ...
+
                         <Text className="text-gray-600 dark:text-gray-400 mb-1">Email *</Text>
                         <TextInput
                             className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-4 text-gray-800 dark:text-gray-100"
@@ -115,22 +144,68 @@ export default function CreateTeacher() {
                         />
 
                         <Text className="text-gray-600 dark:text-gray-400 mb-1">Subject Specialization *</Text>
-                        <TextInput
-                            className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-4 text-gray-800 dark:text-gray-100"
-                            placeholder="e.g. Mathematics, Science, English"
-                            placeholderTextColor="#9CA3AF"
-                            value={subject}
-                            onChangeText={setSubject}
-                        />
+                        <TouchableOpacity
+                            onPress={() => {
+                                setShowSubjectPicker(!showSubjectPicker);
+                                setShowQualificationPicker(false);
+                            }}
+                            className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-2 flex-row justify-between items-center"
+                        >
+                            <Text className={subject ? "text-gray-800 dark:text-gray-100" : "text-gray-400"}>
+                                {subject || 'Select subject'}
+                            </Text>
+                            <Ionicons name="chevron-down" size={20} color="#3B82F6" />
+                        </TouchableOpacity>
+                        {showSubjectPicker && (
+                            <View className="bg-gray-100 dark:bg-gray-700 rounded-lg mb-4" style={{ maxHeight: 200 }}>
+                                <ScrollView nestedScrollEnabled={true}>
+                                    {SUBJECTS.map((s) => (
+                                        <TouchableOpacity
+                                            key={s}
+                                            onPress={() => {
+                                                setSubject(s);
+                                                setShowSubjectPicker(false);
+                                            }}
+                                            className="p-3 border-b border-gray-200 dark:border-gray-600"
+                                        >
+                                            <Text className="text-gray-800 dark:text-gray-100">{s}</Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </ScrollView>
+                            </View>
+                        )}
 
                         <Text className="text-gray-600 dark:text-gray-400 mb-1">Qualification</Text>
-                        <TextInput
-                            className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-4 text-gray-800 dark:text-gray-100"
-                            placeholder="e.g. M.Ed, B.Ed, Ph.D"
-                            placeholderTextColor="#9CA3AF"
-                            value={qualification}
-                            onChangeText={setQualification}
-                        />
+                        <TouchableOpacity
+                            onPress={() => {
+                                setShowQualificationPicker(!showQualificationPicker);
+                                setShowSubjectPicker(false);
+                            }}
+                            className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-2 flex-row justify-between items-center"
+                        >
+                            <Text className={qualification ? "text-gray-800 dark:text-gray-100" : "text-gray-400"}>
+                                {qualification || 'Select qualification'}
+                            </Text>
+                            <Ionicons name="chevron-down" size={20} color="#3B82F6" />
+                        </TouchableOpacity>
+                        {showQualificationPicker && (
+                            <View className="bg-gray-100 dark:bg-gray-700 rounded-lg mb-4" style={{ maxHeight: 200 }}>
+                                <ScrollView nestedScrollEnabled={true}>
+                                    {QUALIFICATIONS.map((q) => (
+                                        <TouchableOpacity
+                                            key={q}
+                                            onPress={() => {
+                                                setQualification(q);
+                                                setShowQualificationPicker(false);
+                                            }}
+                                            className="p-3 border-b border-gray-200 dark:border-gray-600"
+                                        >
+                                            <Text className="text-gray-800 dark:text-gray-100">{q}</Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </ScrollView>
+                            </View>
+                        )}
 
                         <Text className="text-gray-600 dark:text-gray-400 mb-1">Years of Experience</Text>
                         <TextInput

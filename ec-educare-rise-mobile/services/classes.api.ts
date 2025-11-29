@@ -1,15 +1,22 @@
 import { api } from './api.base';
 
 export interface Teacher {
-    userId: string;
-    name: string;
+    teacherId: string;
+    fullName: string;
     email?: string;
+    mobileNumber?: string;
+    telegramUserId?: number;
+    createdOn: string;
 }
 
 export interface Student {
-    userId: string;
-    name: string;
-    email?: string;
+    studentId: string;
+    fullName: string;
+    grade?: string;
+    mobileNumber?: string;
+    telegramUserId?: number;
+    createdOn: string;
+    classes?: Class[];
 }
 
 export interface Class {
@@ -20,10 +27,7 @@ export interface Class {
     startDate: string;
     endDate: string;
     dayOfWeek?: string[];
-    sessionTime?: {
-        totalHours?: number;
-        totalMinutes?: number;
-    };
+    sessionTime?: TimeSpan;
     createdOn: string;
     telegramGroupId?: number;
     telegramGroupLink?: string;
@@ -45,14 +49,17 @@ export interface TimeSpan {
     totalSeconds?: number;
 }
 
-export interface CreateClassDto {
-    name: string;
-    subject: string;
-    standard: string;
-    startDate: string;
-    endDate: string;
-    dayOfWeek: string[];
-    sessionTime: TimeSpan;
+export interface CreateTeacherDto {
+    fullName?: string;
+    mobileNumber?: string;
+    email?: string;
+    password?: string;
+}
+
+export interface CreateStudentDto {
+    fullName?: string;
+    grade?: string;
+    mobileNumber?: string;
 }
 
 export const classesApi = api.injectEndpoints({
@@ -85,7 +92,21 @@ export const classesApi = api.injectEndpoints({
             }),
             invalidatesTags: (result, error, { classId }) => [{ type: 'Classes', id: classId }],
         }),
-        // Add other endpoints: addStudent, uploadMaterials, giveAssignment
+        createTeacher: builder.mutation<Teacher, CreateTeacherDto>({
+            query: (body) => ({
+                url: '/Teachers',
+                method: 'POST',
+                body,
+            }),
+            // Invalidate Directory or Teachers tag if it existed, for now just general invalidation might be needed or none if we don't have a list query yet
+        }),
+        createStudent: builder.mutation<Student, CreateStudentDto>({
+            query: (body) => ({
+                url: '/Students',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
@@ -94,5 +115,7 @@ export const {
     useGetClassByIdQuery,
     useGetClassDetailsQuery,
     useCreateClassMutation,
-    useAssignTeacherMutation
+    useAssignTeacherMutation,
+    useCreateTeacherMutation,
+    useCreateStudentMutation
 } = classesApi;

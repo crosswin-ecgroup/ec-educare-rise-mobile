@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useCreateStudentMutation } from '../../services/classes.api';
+import { LoadingOverlay } from '../../components/LoadingOverlay';
 import { PrimaryButton } from '../../components/PrimaryButton';
 import { CustomAlert } from '../../components/CustomAlert';
 import { Ionicons } from '@expo/vector-icons';
@@ -41,14 +43,14 @@ export default function CreateStudent() {
         }
     };
 
+    const [createStudent, { isLoading }] = useCreateStudentMutation();
+
+    // ... existing state ...
+
     const handleCreate = async () => {
         // Validation
         if (!name.trim()) {
             showAlert('Validation Error', 'Please enter student name', 'error');
-            return;
-        }
-        if (!email.trim()) {
-            showAlert('Validation Error', 'Please enter student email', 'error');
             return;
         }
         if (!grade) {
@@ -56,9 +58,17 @@ export default function CreateStudent() {
             return;
         }
 
-        // TODO: Implement API call to create student
-        // For now, just show success
-        showAlert('Success', 'Student created successfully!', 'success');
+        try {
+            await createStudent({
+                fullName: name,
+                grade,
+                mobileNumber: phone || undefined,
+            }).unwrap();
+            showAlert('Success', 'Student created successfully!', 'success');
+        } catch (error: any) {
+            console.error('Failed to create student:', error);
+            showAlert('Error', 'Failed to create student. Please try again.', 'error');
+        }
     };
 
     return (
@@ -68,6 +78,7 @@ export default function CreateStudent() {
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
             >
+                {isLoading && <LoadingOverlay message="Creating Student..." />}
                 <CustomAlert
                     visible={alertConfig.visible}
                     title={alertConfig.title}
