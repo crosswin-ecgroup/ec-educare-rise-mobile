@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 
 export default function Profile() {
     const user = useAuthStore((state) => state.user);
+    const clearAuth = useAuthStore((state) => state.clearAuth);
     const router = useRouter();
 
     // Mock data since API is missing
@@ -94,6 +95,14 @@ export default function Profile() {
                         <Text className="text-gray-800 dark:text-gray-100 font-medium">{profileData.joinDate}</Text>
                     </View>
                 </View>
+
+                <TouchableOpacity
+                    onPress={clearAuth}
+                    className="bg-red-600 dark:bg-red-700 p-4 rounded-xl shadow-sm flex-row items-center justify-center mb-6"
+                >
+                    <Ionicons name="log-out-outline" size={24} color="white" />
+                    <Text className="text-white font-bold text-lg ml-2">Logout</Text>
+                </TouchableOpacity>
             </View>
         </ScrollView>
     );

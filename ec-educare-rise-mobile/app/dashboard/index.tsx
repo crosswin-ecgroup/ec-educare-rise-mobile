@@ -57,7 +57,7 @@ export default function Dashboard() {
                     renderItem={({ item }) => (
                         <TouchableOpacity
                             onPress={() => handleClassPress(item.classId)}
-                            className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm mb-4 border border-gray-100 dark:border-gray-700 active:scale-95 transition-transform"
+                            className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm mb-4 border border-gray-100 dark:border-gray-700 active:opacity-90"
                         >
                             <View className="flex-row justify-between items-start mb-2">
                                 <View className="flex-1 mr-2">

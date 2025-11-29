@@ -96,7 +96,7 @@ export default function CreateClass() {
                 <TouchableOpacity onPress={() => router.back()} className="mr-4">
                     <Ionicons name="arrow-back" size={24} color="#3B82F6" />
                 </TouchableOpacity>
-                <Text className="text-xl font-bold text-gray-800 dark:text-gray-100">Create New Class</Text>
+                <Text className="text-xl font-bold text-gray-800 dark:text-gray-100">Create Class</Text>
             </View>
 
             <ScrollView className="flex-1 p-4" showsVerticalScrollIndicator={false}>
@@ -181,14 +181,14 @@ export default function CreateClass() {
                                 key={day}
                                 onPress={() => toggleDay(day)}
                                 className={`mr-2 mb-2 px-3 py-2 rounded-full border ${selectedDays.includes(day)
-                                        ? 'bg-blue-600 border-blue-600'
-                                        : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600'
+                                    ? 'bg-blue-600 border-blue-600'
+                                    : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600'
                                     }`}
                             >
                                 <Text
                                     className={`${selectedDays.includes(day)
-                                            ? 'text-white font-bold'
-                                            : 'text-gray-600 dark:text-gray-300'
+                                        ? 'text-white font-bold'
+                                        : 'text-gray-600 dark:text-gray-300'
                                         }`}
                                 >
                                     {day.slice(0, 3)}

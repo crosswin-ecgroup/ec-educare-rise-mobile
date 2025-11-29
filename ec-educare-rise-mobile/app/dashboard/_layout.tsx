@@ -1,17 +1,20 @@
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
 import { useAuthStore } from '../../store/auth.store';
 import { TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function DashboardLayout() {
-    const clearAuth = useAuthStore((state) => state.clearAuth);
+    const router = useRouter();
 
     return (
         <Tabs
             screenOptions={{
                 headerRight: () => (
-                    <TouchableOpacity onPress={clearAuth} className="mr-4">
-                        <Text className="text-blue-600 dark:text-blue-400 font-bold">Logout</Text>
+                    <TouchableOpacity
+                        onPress={() => router.push('/dashboard/profile')}
+                        className="mr-4"
+                    >
+                        <Ionicons name="person-circle-outline" size={32} color="#3B82F6" />
                     </TouchableOpacity>
                 ),
             }}
