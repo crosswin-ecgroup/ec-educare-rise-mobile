@@ -62,7 +62,7 @@ export default function CreateStudent() {
             await createStudent({
                 fullName: name,
                 grade,
-                mobileNumber: phone || undefined,
+                mobileNumber: phone ? `+91${phone}` : undefined,
             }).unwrap();
             showAlert('Success', 'Student created successfully!', 'success');
         } catch (error: any) {
@@ -123,14 +123,22 @@ export default function CreateStudent() {
                         />
 
                         <Text className="text-gray-600 dark:text-gray-400 mb-1">Phone Number</Text>
-                        <TextInput
-                            className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-4 text-gray-800 dark:text-gray-100"
-                            placeholder="+1 234 567 8900"
-                            placeholderTextColor="#9CA3AF"
-                            value={phone}
-                            onChangeText={setPhone}
-                            keyboardType="phone-pad"
-                        />
+                        <View className="flex-row items-center bg-gray-100 dark:bg-gray-700 rounded-lg mb-4">
+                            <Text className="text-gray-800 dark:text-gray-100 pl-3 pr-1">+91</Text>
+                            <TextInput
+                                className="flex-1 p-3 text-gray-800 dark:text-gray-100"
+                                placeholder="9876543210"
+                                placeholderTextColor="#9CA3AF"
+                                value={phone}
+                                onChangeText={(text) => {
+                                    // Only allow numbers and limit to 10 digits
+                                    const cleaned = text.replace(/[^0-9]/g, '').slice(0, 10);
+                                    setPhone(cleaned);
+                                }}
+                                keyboardType="phone-pad"
+                                maxLength={10}
+                            />
+                        </View>
 
                         <Text className="text-gray-600 dark:text-gray-400 mb-1">Grade *</Text>
                         <TouchableOpacity

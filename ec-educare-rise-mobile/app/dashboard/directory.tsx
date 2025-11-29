@@ -32,12 +32,17 @@ export default function Directory() {
 
         return people.filter(person => {
             const matchesSearch = person.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                (person.email?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
                 (person.mobileNumber?.toLowerCase() || '').includes(searchQuery.toLowerCase());
+
+            // For teachers, also search by email
+            if (selectedType === 'teacher') {
+                const teacher = person as NonNullable<typeof teachers>[number];
+                return matchesSearch || (teacher.email?.toLowerCase() || '').includes(searchQuery.toLowerCase());
+            }
 
             // For students, filter by grade
             if (selectedType === 'student' && selectedGrade !== 'All') {
-                const student = person as typeof students[0];
+                const student = person as NonNullable<typeof students>[number];
                 return matchesSearch && student.grade === selectedGrade;
             }
 
@@ -67,7 +72,7 @@ export default function Directory() {
                         >
                             <Text className={`text-center font-bold ${selectedType === 'teacher' ? 'text-white' : 'text-gray-600 dark:text-gray-400'
                                 }`}>
-                                Teachers ({teachers.length})
+                                Teachers ({teachers?.length || 0})
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -77,7 +82,7 @@ export default function Directory() {
                         >
                             <Text className={`text-center font-bold ${selectedType === 'student' ? 'text-white' : 'text-gray-600 dark:text-gray-400'
                                 }`}>
-                                Students ({students.length})
+                                Students ({students?.length || 0})
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -158,9 +163,9 @@ export default function Directory() {
                                             <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">
                                                 {person.fullName}
                                             </Text>
-                                            {person.email && (
+                                            {selectedType === 'teacher' && (person as NonNullable<typeof teachers>[number]).email && (
                                                 <Text className="text-sm text-gray-500 dark:text-gray-400">
-                                                    {person.email}
+                                                    {(person as NonNullable<typeof teachers>[number]).email}
                                                 </Text>
                                             )}
                                             {person.mobileNumber && (

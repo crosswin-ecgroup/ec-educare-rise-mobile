@@ -62,6 +62,16 @@ export interface CreateStudentDto {
     mobileNumber?: string;
 }
 
+export interface CreateClassDto {
+    name?: string;
+    subject?: string;
+    standard?: string;
+    startDate: string;
+    endDate: string;
+    dayOfWeek?: string[];
+    sessionTime?: TimeSpan;
+}
+
 export const classesApi = api.injectEndpoints({
     endpoints: (builder) => ({
         getClasses: builder.query<Class[], void>({
