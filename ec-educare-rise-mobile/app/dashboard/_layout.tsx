@@ -26,7 +26,22 @@ export default function DashboardLayout() {
                     ),
                 }}
             />
-            {/* Add other tabs if needed, or just rely on index for now */}
+            <Tabs.Screen
+                name="calendar"
+                options={{
+                    title: 'Calendar',
+                    tabBarLabel: 'Calendar',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="calendar" size={size} color={color} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="class-details"
+                options={{
+                    href: null,
+                }}
+            />
         </Tabs>
     );
 }
