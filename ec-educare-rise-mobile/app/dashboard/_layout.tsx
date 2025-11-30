@@ -1,20 +1,23 @@
 import { Tabs, useRouter } from 'expo-router';
 import { useAuthStore } from '../../store/auth.store';
-import { TouchableOpacity, Text } from 'react-native';
+import { TouchableOpacity, Text, useColorScheme } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function DashboardLayout() {
     const router = useRouter();
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === 'dark';
 
     return (
         <Tabs
             screenOptions={{
                 headerShown: false,
                 tabBarActiveTintColor: '#4F46E5', // Primary indigo
-                tabBarInactiveTintColor: '#9CA3AF',
+                tabBarInactiveTintColor: isDark ? '#9CA3AF' : '#6B7280',
                 tabBarStyle: {
+                    backgroundColor: isDark ? '#1F2937' : '#FFFFFF',
                     borderTopWidth: 1,
-                    borderTopColor: '#E5E7EB', // gray-200
+                    borderTopColor: isDark ? '#374151' : '#E5E7EB',
                     height: 60,
                     paddingBottom: 8,
                     paddingTop: 8,

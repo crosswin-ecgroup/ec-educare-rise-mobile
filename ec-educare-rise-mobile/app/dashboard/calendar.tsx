@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, useColorScheme } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import { useGetClassesQuery } from '../../services/classes.api';
 import { LoadingOverlay } from '../../components/LoadingOverlay';
@@ -24,6 +24,8 @@ export default function CalendarScreen() {
     const router = useRouter();
     const [selectedDate, setSelectedDate] = useState('');
     const insets = useSafeAreaInsets();
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === 'dark';
 
     // Assign colors to classes
     const classColors = useMemo(() => {
@@ -140,16 +142,16 @@ export default function CalendarScreen() {
                         theme={{
                             backgroundColor: 'transparent',
                             calendarBackground: 'transparent',
-                            textSectionTitleColor: '#6B7280',
+                            textSectionTitleColor: isDark ? '#9CA3AF' : '#6B7280',
                             selectedDayBackgroundColor: '#4F46E5',
                             selectedDayTextColor: '#ffffff',
                             todayTextColor: '#4F46E5',
-                            dayTextColor: '#1F2937',
-                            textDisabledColor: '#D1D5DB',
+                            dayTextColor: isDark ? '#F9FAFB' : '#1F2937',
+                            textDisabledColor: isDark ? '#4B5563' : '#D1D5DB',
                             dotColor: '#4F46E5',
                             selectedDotColor: '#ffffff',
                             arrowColor: '#4F46E5',
-                            monthTextColor: '#1F2937',
+                            monthTextColor: isDark ? '#F9FAFB' : '#1F2937',
                             indicatorColor: '#4F46E5',
                             textDayFontWeight: '500',
                             textMonthFontWeight: 'bold',

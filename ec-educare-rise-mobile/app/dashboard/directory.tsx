@@ -242,11 +242,13 @@ export default function Directory() {
             {/* Floating Action Button */}
             <Pressable
                 onPress={handleCreatePress}
-                className="absolute bottom-6 right-6 w-16 h-16 rounded-2xl items-center justify-center shadow-lg shadow-blue-600/30 active:scale-90 transition-all z-50"
+                style={{ borderRadius: 32 }}
+                className="absolute bottom-6 right-6 w-16 h-16 items-center justify-center shadow-lg shadow-blue-600/30 active:scale-90 transition-all z-50"
             >
                 <LinearGradient
                     colors={selectedType === 'teacher' ? ['#4F46E5', '#3730A3'] : ['#059669', '#047857']}
-                    className="w-full h-full rounded-2xl items-center justify-center"
+                    style={{ borderRadius: 32 }}
+                    className="w-full h-full items-center justify-center"
                 >
                     <Ionicons name="add" size={32} color="white" />
                 </LinearGradient>
