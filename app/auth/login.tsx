@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, ScrollView, Image, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { PrimaryButton } from '../../components/PrimaryButton';
-import { LoadingOverlay } from '../../components/LoadingOverlay';
+import React, { useState } from 'react';
+import { Image, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { CustomAlert } from '../../components/CustomAlert';
-import { loginWithPassword } from '../../utils/oauth';
-import { useAuthStore } from '../../store/auth.store';
+import { LoadingOverlay } from '../../components/LoadingOverlay';
 import { useSendTelegramOtpMutation, useVerifyTelegramOtpMutation } from '../../services/auth.api';
+import { useAuthStore } from '../../store/auth.store';
+import { loginWithPassword } from '../../utils/oauth';
 
 export default function Login() {
     const [isLoading, setIsLoading] = useState(false);
@@ -113,9 +112,11 @@ export default function Login() {
                     />
 
                     <View className="items-center mb-12">
-                        <View className="bg-white/20 p-6 rounded-[32px] backdrop-blur-md border border-white/20 mb-6 shadow-xl">
-                            <Ionicons name="school" size={64} color="white" />
-                        </View>
+                        <Image
+                            source={require('../../assets/images/logo.png')}
+                            style={{ width: 140, height: 140, marginBottom: 24, borderRadius: 70, overflow: 'hidden' }}
+                            resizeMode="cover"
+                        />
                         <Text className="text-4xl font-bold text-white tracking-tight text-center">
                             Welcome Back
                         </Text>
@@ -124,7 +125,7 @@ export default function Login() {
                         </Text>
                     </View>
 
-                    <View className="bg-white/10 p-6 rounded-[32px] backdrop-blur-md border border-white/20 shadow-2xl">
+                    <View className="bg-white/10 p-6 rounded-[32px] backdrop-blur-md border border-white/20">
                         <View className="mb-4">
                             <Text className="text-blue-100 text-sm font-medium mb-2 ml-1">Username</Text>
                             <View className="bg-white/10 border border-white/20 rounded-2xl flex-row items-center px-4 h-14">
@@ -160,7 +161,7 @@ export default function Login() {
 
                         <TouchableOpacity
                             onPress={handlePasswordLogin}
-                            className="bg-white h-14 rounded-2xl items-center justify-center shadow-lg active:scale-[0.98] transition-all mb-6"
+                            className="bg-white h-14 rounded-2xl items-center justify-center active:scale-[0.98] transition-all mb-6"
                         >
                             <Text className="text-blue-600 font-bold text-lg">Sign In</Text>
                         </TouchableOpacity>
@@ -178,10 +179,19 @@ export default function Login() {
                                     <Ionicons name="call-outline" size={20} color="#BFDBFE" />
                                     <TextInput
                                         className="flex-1 ml-3 text-white text-base font-medium"
-                                        placeholder="+1234567890"
+                                        placeholder="+91 1234567890"
                                         placeholderTextColor="rgba(219, 234, 254, 0.5)"
                                         value={phoneNumber}
-                                        onChangeText={setPhoneNumber}
+                                        onChangeText={(text) => {
+                                            // Add +91 prefix when user starts typing
+                                            if (text.length === 0) {
+                                                setPhoneNumber('');
+                                            } else if (!text.startsWith('+91')) {
+                                                setPhoneNumber('+91' + text.replace(/^\+?91?/, ''));
+                                            } else {
+                                                setPhoneNumber(text);
+                                            }
+                                        }}
                                         keyboardType="phone-pad"
                                     />
                                 </View>
@@ -211,7 +221,7 @@ export default function Login() {
                                 </View>
                                 <TouchableOpacity
                                     onPress={handleVerifyOtp}
-                                    className="bg-green-500 h-14 rounded-2xl items-center justify-center shadow-lg active:scale-[0.98] transition-all mb-4"
+                                    className="bg-green-500 h-14 rounded-2xl items-center justify-center active:scale-[0.98] transition-all mb-4"
                                 >
                                     <Text className="text-white font-bold text-lg">Verify & Login</Text>
                                 </TouchableOpacity>
@@ -220,6 +230,16 @@ export default function Login() {
                                 </TouchableOpacity>
                             </View>
                         )}
+                    </View>
+
+                    {/* Footer */}
+                    <View className="mt-8 items-center">
+                        <Text className="text-blue-200 text-sm mb-1">
+                            Made with ❤️ by EC Group
+                        </Text>
+                        <Text className="text-blue-200 text-xs">
+                            Prompt Patrol
+                        </Text>
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>

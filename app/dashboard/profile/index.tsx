@@ -1,11 +1,11 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useAuthStore } from '@/store/auth.store';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
+import React from 'react';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Profile() {
     const user = useAuthStore((state) => state.user);
@@ -80,7 +80,7 @@ export default function Profile() {
                     <View className="relative">
                         <View className="w-24 h-24 bg-white rounded-full items-center justify-center mb-3 border-4 border-white/30 shadow-2xl">
                             <Image
-                                source={require('@/assets/images/logo.jpg')}
+                                source={require('@/assets/images/logo.png')}
                                 className="w-full h-full rounded-full"
                                 resizeMode="cover"
                             />
@@ -151,7 +151,7 @@ export default function Profile() {
                         Version 1.0.0 (Build 2024.1)
                     </Text>
                     <Text className="text-gray-400 dark:text-gray-600 text-sm mb-1 mt-1">
-                        Made with ❤️ by EC Group Datasoft Private Limited
+                        Made with ❤️ by EC Group
                     </Text>
                     <Text className="text-gray-400 dark:text-gray-600 text-xs">
                         Prompt Patrol

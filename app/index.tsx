@@ -1,5 +1,5 @@
-import { View, ActivityIndicator, Text, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { ActivityIndicator, Image, Text, View } from 'react-native';
 
 export default function Index() {
     return (
@@ -11,11 +11,11 @@ export default function Index() {
                 className="flex-1 items-center justify-center"
             >
                 <View className="flex-1 items-center justify-center">
-                    <View className="bg-white/10 p-6 rounded-[32px] backdrop-blur-md border border-white/20 mb-8 shadow-2xl">
+                    <View className="mb-8 shadow-2xl">
                         <Image
-                            source={require('../assets/images/logo.jpg')}
-                            className="w-32 h-32 rounded-full"
-                            resizeMode="contain"
+                            source={require('../assets/images/logo.png')}
+                            className="w-40 h-40 rounded-full"
+                            resizeMode="cover"
                         />
                     </View>
 
