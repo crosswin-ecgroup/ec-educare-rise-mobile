@@ -17,7 +17,8 @@
         "foregroundImage": "./assets/images/logo.jpg"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.crosswin.eceducarerisemobile"
     },
     "web": {
       "output": "static",
