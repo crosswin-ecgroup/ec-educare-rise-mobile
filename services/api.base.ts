@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
+import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { useAuthStore } from '../store/auth.store';
 import { refreshAccessToken } from '../utils/oauth';
 
@@ -60,5 +60,5 @@ export const api = createApi({
     reducerPath: 'api',
     baseQuery: baseQueryWithReauth,
     endpoints: () => ({}),
-    tagTypes: ['Classes', 'Materials', 'Assignments', 'User', 'Teachers', 'Students'],
+    tagTypes: ['Classes', 'Materials', 'Assignments', 'User', 'Teachers', 'Students', 'Sessions', 'Attendance'],
 });

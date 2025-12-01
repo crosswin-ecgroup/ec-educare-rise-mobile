@@ -1,4 +1,5 @@
-import { useGetStudentsQuery, useGetTeachersQuery } from '@/services/classes.api';
+import { useGetStudentsQuery } from '@/services/students.api';
+import { useGetTeachersQuery } from '@/services/teachers.api';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';

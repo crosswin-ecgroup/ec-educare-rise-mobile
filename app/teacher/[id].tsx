@@ -1,5 +1,5 @@
 import { LoadingOverlay } from '@/components/LoadingOverlay';
-import { useGetTeachersQuery } from '@/services/classes.api';
+import { useGetTeacherByIdQuery } from '@/services/teachers.api';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -9,10 +9,8 @@ import { Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 export default function TeacherDetails() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const router = useRouter();
-    // Ensure we fetch teachers if not already in cache (e.g. direct navigation or refresh)
-    const { data: teachers, isLoading } = useGetTeachersQuery();
-
-    const teacherData = teachers?.find(t => t.teacherId === id);
+    // Fetch specific teacher details
+    const { data: teacherData, isLoading } = useGetTeacherByIdQuery(id || '');
 
     if (isLoading) {
         return <LoadingOverlay />;

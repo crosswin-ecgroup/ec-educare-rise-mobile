@@ -1,5 +1,5 @@
 import { LoadingOverlay } from '@/components/LoadingOverlay';
-import { useGetStudentsQuery } from '@/services/classes.api';
+import { useGetStudentByIdQuery } from '@/services/students.api';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -9,10 +9,8 @@ import { Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 export default function StudentDetails() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const router = useRouter();
-    // Ensure we fetch students if not already in cache
-    const { data: students, isLoading } = useGetStudentsQuery();
-
-    const studentData = students?.find(s => s.studentId === id);
+    // Fetch specific student details
+    const { data: studentData, isLoading } = useGetStudentByIdQuery(id || '');
 
     if (isLoading) {
         return <LoadingOverlay />;
@@ -80,7 +78,7 @@ export default function StudentDetails() {
                             <View className="mb-4">
                                 <Text className="text-xs font-medium text-gray-400 uppercase mb-2">Mobile Number</Text>
                                 <TouchableOpacity
-                                    onPress={() => Linking.openURL(`tel:${studentData.mobileNumber}`)}
+                                    onPress={() => Linking.openURL(`tel:${studentData.mobileNumber} `)}
                                     className="flex-row items-center bg-green-50 dark:bg-green-900/20 p-3 rounded-2xl border border-green-100 dark:border-green-800 active:bg-green-100 dark:active:bg-green-900/30"
                                 >
                                     <View className="bg-green-500/20 p-2 rounded-xl mr-3">

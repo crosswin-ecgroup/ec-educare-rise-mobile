@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useCreateStudentMutation } from '@/services/classes.api';
-import { LoadingOverlay } from '@/components/LoadingOverlay';
 import { CustomAlert } from '@/components/CustomAlert';
+import { LoadingOverlay } from '@/components/LoadingOverlay';
+import { useCreateStudentMutation } from '@/services/students.api';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function CreateStudent() {
     const router = useRouter();
