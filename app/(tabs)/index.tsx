@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useGetClassesQuery } from '../../services/classes.api';
 import { useAuthStore } from '../../store/auth.store';
@@ -10,6 +10,7 @@ export default function Dashboard() {
     const router = useRouter();
     const user = useAuthStore((state) => state.user);
     const { data: classes } = useGetClassesQuery();
+    const [showAllClasses, setShowAllClasses] = useState(false);
 
     // Calculate statistics
     const stats = useMemo(() => {
@@ -155,47 +156,65 @@ export default function Dashboard() {
                         </View>
 
                         {todaysClasses.length > 0 ? (
-                            todaysClasses.map((item, index) => {
-                                // Safe time formatting
-                                let timeDisplay = 'View';
-                                if (item.sessionTime && item.sessionTime.hours !== undefined) {
-                                    timeDisplay = `${item.sessionTime.hours}:${String(item.sessionTime.minutes || 0).padStart(2, '0')}`;
-                                } else if (item.startDate) {
-                                    const date = new Date(item.startDate);
-                                    if (!isNaN(date.getTime())) {
-                                        timeDisplay = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+                            <>
+                                {todaysClasses.slice(0, showAllClasses ? todaysClasses.length : 5).map((item, index) => {
+                                    // Safe time formatting with AM/PM
+                                    let timeDisplay = 'View';
+                                    if (item.sessionTime && item.sessionTime.hours !== undefined) {
+                                        const hours = item.sessionTime.hours;
+                                        const minutes = item.sessionTime.minutes || 0;
+                                        const period = hours >= 12 ? 'PM' : 'AM';
+                                        const displayHours = hours % 12 || 12;
+                                        timeDisplay = `${displayHours}:${String(minutes).padStart(2, '0')} ${period}`;
+                                    } else if (item.startDate) {
+                                        const date = new Date(item.startDate);
+                                        if (!isNaN(date.getTime())) {
+                                            timeDisplay = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
+                                        }
                                     }
-                                }
 
-                                return (
+                                    return (
+                                        <TouchableOpacity
+                                            key={index}
+                                            onPress={() => router.push(`/class/${item.classId}` as any)}
+                                            className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm mb-3 border border-gray-100 dark:border-gray-700 flex-row items-center"
+                                            activeOpacity={0.9}
+                                        >
+                                            <View className="w-1 bg-green-500 h-full absolute left-0 rounded-l-2xl" />
+                                            <View className="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-900/30 items-center justify-center ml-2">
+                                                <Text className="text-xl font-bold text-green-600 dark:text-green-400">
+                                                    {item.name.charAt(0).toUpperCase()}
+                                                </Text>
+                                            </View>
+                                            <View className="flex-1 ml-4">
+                                                <Text className="text-base font-bold text-gray-800 dark:text-gray-100">
+                                                    {item.name}
+                                                </Text>
+                                                <Text className="text-gray-500 dark:text-gray-400 text-xs mt-1">
+                                                    {item.subject} • {item.standard || 'N/A'}
+                                                </Text>
+                                            </View>
+                                            <View className="bg-gray-50 dark:bg-gray-700 px-3 py-1 rounded-full">
+                                                <Text className="text-xs font-medium text-gray-600 dark:text-gray-300">
+                                                    {timeDisplay}
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    );
+                                })}
+
+                                {todaysClasses.length > 5 && (
                                     <TouchableOpacity
-                                        key={index}
-                                        onPress={() => router.push(`/class/${item.classId}` as any)}
-                                        className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm mb-3 border border-gray-100 dark:border-gray-700 flex-row items-center"
-                                        activeOpacity={0.9}
+                                        onPress={() => setShowAllClasses(!showAllClasses)}
+                                        className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-4 border border-blue-100 dark:border-blue-800 items-center"
+                                        activeOpacity={0.8}
                                     >
-                                        <View className="w-1 bg-green-500 h-full absolute left-0 rounded-l-2xl" />
-                                        <View className="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-900/30 items-center justify-center ml-2">
-                                            <Text className="text-xl font-bold text-green-600 dark:text-green-400">
-                                                {item.name.charAt(0).toUpperCase()}
-                                            </Text>
-                                        </View>
-                                        <View className="flex-1 ml-4">
-                                            <Text className="text-base font-bold text-gray-800 dark:text-gray-100">
-                                                {item.name}
-                                            </Text>
-                                            <Text className="text-gray-500 dark:text-gray-400 text-xs mt-1">
-                                                {item.subject} • {item.standard || 'N/A'}
-                                            </Text>
-                                        </View>
-                                        <View className="bg-gray-50 dark:bg-gray-700 px-3 py-1 rounded-full">
-                                            <Text className="text-xs font-medium text-gray-600 dark:text-gray-300">
-                                                {timeDisplay}
-                                            </Text>
-                                        </View>
+                                        <Text className="text-blue-600 dark:text-blue-400 font-bold text-sm">
+                                            {showAllClasses ? 'Show Less' : `Show ${todaysClasses.length - 5} More`}
+                                        </Text>
                                     </TouchableOpacity>
-                                );
-                            })
+                                )}
+                            </>
                         ) : (
                             <View className="bg-white dark:bg-gray-800 rounded-2xl p-8 items-center justify-center border border-dashed border-gray-300 dark:border-gray-700">
                                 <Ionicons name="calendar-outline" size={48} color="#9CA3AF" />
