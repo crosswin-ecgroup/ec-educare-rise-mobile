@@ -1,3 +1,4 @@
+import { NetworkStatus } from '@/components/NetworkStatus';
 import { Stack, useRootNavigationState, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import { Provider } from 'react-redux';
@@ -61,6 +62,7 @@ function RootLayoutNav() {
 export default function RootLayout() {
   return (
     <Provider store={store}>
+      <NetworkStatus />
       <RootLayoutNav />
     </Provider>
   );
