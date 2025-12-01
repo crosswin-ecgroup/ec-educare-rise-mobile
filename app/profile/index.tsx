@@ -1,3 +1,4 @@
+import { ProfileSkeleton } from '@/components/skeletons/ProfileSkeleton';
 import { useGetTelegramAuthStatusQuery } from '@/services/telegram.api';
 import { useAuthStore } from '@/store/auth.store';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,6 +16,10 @@ export default function Profile() {
     const insets = useSafeAreaInsets();
     const { colorScheme, setColorScheme } = useColorScheme();
     const { data: telegramStatus, isLoading: isTelegramLoading } = useGetTelegramAuthStatusQuery();
+
+    if (isTelegramLoading) {
+        return <ProfileSkeleton />;
+    }
 
     // Profile data
     const profileData = {

@@ -6,7 +6,7 @@ import { StudentModal } from '@/components/class/StudentModal';
 import { TeacherList } from '@/components/class/TeacherList';
 import { TeacherModal } from '@/components/class/TeacherModal';
 import { CustomAlert } from '@/components/CustomAlert';
-import { LoadingOverlay } from '@/components/LoadingOverlay';
+import { ClassDetailsSkeleton } from '@/components/skeletons/ClassDetailsSkeleton';
 import {
     useAddStudentToClassMutation,
     useAssignTeacherMutation,
@@ -48,7 +48,7 @@ export default function ClassDetails() {
     });
 
     if (isLoading) {
-        return <LoadingOverlay />;
+        return <ClassDetailsSkeleton />;
     }
 
     if (!classData) {

@@ -6,7 +6,7 @@ import { Animated, Text } from 'react-native';
 export const NetworkStatus = () => {
     const [isOnline, setIsOnline] = useState(true);
     const [showToast, setShowToast] = useState(false);
-    const slideAnim = useState(new Animated.Value(-100))[0];
+    const slideAnim = useState(new Animated.Value(100))[0];
 
     useEffect(() => {
         const unsubscribe = NetInfo.addEventListener(state => {
@@ -16,7 +16,7 @@ export const NetworkStatus = () => {
                 setIsOnline(online);
                 setShowToast(true);
 
-                // Show toast
+                // Show toast (slide up from bottom)
                 Animated.timing(slideAnim, {
                     toValue: 0,
                     duration: 300,
@@ -27,7 +27,7 @@ export const NetworkStatus = () => {
                 if (online) {
                     setTimeout(() => {
                         Animated.timing(slideAnim, {
-                            toValue: -100,
+                            toValue: 100, // Slide down to hide
                             duration: 300,
                             useNativeDriver: true,
                         }).start(() => setShowToast(false));
@@ -54,12 +54,12 @@ export const NetworkStatus = () => {
             style={{
                 transform: [{ translateY: slideAnim }],
                 position: 'absolute',
-                top: 0,
+                bottom: 0, // Changed from top: 0
                 left: 0,
                 right: 0,
                 zIndex: 9999,
             }}
-            className={`${isOnline ? 'bg-green-600' : 'bg-red-600'} px-4 py-3 flex-row items-center justify-center shadow-lg`}
+            className={`${isOnline ? 'bg-green-600' : 'bg-red-600'} px-4 py-3 pb-8 flex-row items-center justify-center shadow-lg`}
         >
             <Ionicons
                 name={isOnline ? 'wifi' : 'wifi-outline'}

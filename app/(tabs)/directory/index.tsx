@@ -1,5 +1,6 @@
 import { DirectoryHeader } from '@/components/directory/DirectoryHeader';
 import { PersonList } from '@/components/directory/PersonList';
+import { ListSkeleton } from '@/components/skeletons/ListSkeleton';
 import { useGetStudentsQuery } from '@/services/students.api';
 import { useGetTeachersQuery } from '@/services/teachers.api';
 import { Ionicons } from '@expo/vector-icons';
@@ -107,14 +108,18 @@ export default function Directory() {
                     </View>
                 )}
 
-                <PersonList
-                    data={filteredPeople}
-                    isLoading={isLoading}
-                    selectedType={selectedType}
-                    onPress={handlePress}
-                    searchQuery={searchQuery}
-                    selectedGrade={selectedGrade}
-                />
+                {isLoading ? (
+                    <ListSkeleton />
+                ) : (
+                    <PersonList
+                        data={filteredPeople}
+                        isLoading={false}
+                        selectedType={selectedType}
+                        onPress={handlePress}
+                        searchQuery={searchQuery}
+                        selectedGrade={selectedGrade}
+                    />
+                )}
             </View>
 
             {/* Floating Action Button */}
