@@ -1,3 +1,5 @@
+import { DirectoryHeader } from '@/components/directory/DirectoryHeader';
+import { PersonList } from '@/components/directory/PersonList';
 import { useGetStudentsQuery } from '@/services/students.api';
 import { useGetTeachersQuery } from '@/services/teachers.api';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,8 +8,6 @@ import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { ScrollView, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { DirectoryHeader } from './components/DirectoryHeader';
-import { PersonList } from './components/PersonList';
 
 type PersonType = 'teacher' | 'student';
 
