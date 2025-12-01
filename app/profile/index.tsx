@@ -102,31 +102,16 @@ export default function Profile() {
                 {/* Telegram Status */}
                 <View className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm p-6 mb-6 border border-gray-100 dark:border-gray-700">
                     <Text className="text-lg font-bold text-gray-900 dark:text-white mb-4">Telegram Status</Text>
-                    <View className="flex-row items-center justify-between">
-                        {!isTelegramLoading && (
-                            <View className="flex-1 flex-col gap-2">
-                                <View className={`px-3 py-1 rounded-lg flex-row items-center ${telegramStatus?.isAuthenticated
-                                    ? 'bg-green-100 dark:bg-green-900/40'
-                                    : 'bg-red-100 dark:bg-red-900/40'
-                                    }`}>
-                                    <View className={`w-2 h-2 rounded-full mr-2 ${telegramStatus?.isAuthenticated ? 'bg-green-500' : 'bg-red-500'
-                                        }`} />
-                                    <Text className={`text-md font-bold ${telegramStatus?.isAuthenticated
-                                        ? 'text-green-700 dark:text-green-300'
-                                        : 'text-red-700 dark:text-red-300'
-                                        }`}>
-                                        {telegramStatus?.isAuthenticated ? 'Authenticated' : 'Not Authenticated'}
-                                    </Text>
-
-                                </View>
-                                <Text className='text-sm font-italic'>{telegramStatus?.phoneNumber}</Text>
-                                <Text className={`text-sm font-bold ${telegramStatus?.isAuthenticated
-                                    ? 'text-green-700 dark:text-green-300'
-                                    : 'text-red-700 dark:text-red-300'
-                                    }`}>{telegramStatus?.message}</Text>
-                            </View>
-                        )}
+                    <View className="flex-row items-center mb-4">
+                        <View className={`px-3 py-1 rounded-lg flex-row items-center ${telegramStatus?.isAuthenticated ? 'bg-green-100 dark:bg-green-900/40' : 'bg-red-100 dark:bg-red-900/40'}`}>
+                            <View className={`w-2 h-2 rounded-full mr-2 ${telegramStatus?.isAuthenticated ? 'bg-green-500' : 'bg-red-500'}`} />
+                            <Text className={`text-sm font-bold ${telegramStatus?.isAuthenticated ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'}`}>
+                                {telegramStatus?.isAuthenticated ? 'Authenticated' : 'Not Authenticated'}
+                            </Text>
+                        </View>
                     </View>
+                    {renderInfoItem('call', 'Phone Number', telegramStatus?.phoneNumber ?? '-', '#3B82F6', 'bg-blue-50 dark:bg-blue-900/20')}
+                    {renderInfoItem('information-circle', 'Message', telegramStatus?.message ?? '-', '#10B981', 'bg-green-50 dark:bg-green-900/20')}
                 </View>
 
                 {/* Theme Selector */}

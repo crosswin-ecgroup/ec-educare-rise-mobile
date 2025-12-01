@@ -362,7 +362,7 @@ export default function ClassDetails() {
                         </TouchableOpacity>
                     </View>
                     <View className="p-4">
-                        <View className="bg-gray-200 dark:bg-gray-800 rounded-xl flex-row items-center px-3 py-2">
+                        <View className="bg-gray-200 dark:bg-gray-800 rounded-xl flex-row items-center px-3 py-2 mb-3">
                             <Ionicons name="search" size={20} color="#9CA3AF" />
                             <TextInput
                                 className="flex-1 ml-2 text-gray-800 dark:text-white"
@@ -372,6 +372,16 @@ export default function ClassDetails() {
                                 onChangeText={setTeacherSearch}
                             />
                         </View>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setShowTeacherModal(false);
+                                router.push('/teacher/create');
+                            }}
+                            className="bg-blue-600 dark:bg-blue-500 rounded-xl p-3 flex-row items-center justify-center active:bg-blue-700 dark:active:bg-blue-600"
+                        >
+                            <Ionicons name="add-circle" size={20} color="white" />
+                            <Text className="text-white font-bold ml-2">Create New Teacher</Text>
+                        </TouchableOpacity>
                     </View>
                     <FlatList
                         data={filteredTeachers}
@@ -420,7 +430,7 @@ export default function ClassDetails() {
                         </TouchableOpacity>
                     </View>
                     <View className="p-4">
-                        <View className="bg-gray-200 dark:bg-gray-800 rounded-xl flex-row items-center px-3 py-2">
+                        <View className="bg-gray-200 dark:bg-gray-800 rounded-xl flex-row items-center px-3 py-2 mb-3">
                             <Ionicons name="search" size={20} color="#9CA3AF" />
                             <TextInput
                                 className="flex-1 ml-2 text-gray-800 dark:text-white"
@@ -430,6 +440,16 @@ export default function ClassDetails() {
                                 onChangeText={setStudentSearch}
                             />
                         </View>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setShowStudentModal(false);
+                                router.push('/student/create');
+                            }}
+                            className="bg-green-600 dark:bg-green-500 rounded-xl p-3 flex-row items-center justify-center active:bg-green-700 dark:active:bg-green-600"
+                        >
+                            <Ionicons name="add-circle" size={20} color="white" />
+                            <Text className="text-white font-bold ml-2">Create New Student</Text>
+                        </TouchableOpacity>
                     </View>
                     <FlatList
                         data={filteredStudents}
