@@ -151,7 +151,7 @@ export default function Classes() {
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         data={standards}
-                        keyExtractor={(item) => item}
+                        keyExtractor={(item) => item || 'all'}
                         renderItem={({ item: std }) => (
                             <TouchableOpacity
                                 onPress={() => setFilterStandard(std || 'All')}
