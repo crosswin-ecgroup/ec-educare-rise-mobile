@@ -64,6 +64,13 @@ export default function ClassDetails() {
         }
     }, [showStudentModal]);
 
+    // Debug dashboard data
+    React.useEffect(() => {
+        if (dashboardData) {
+            console.log('Dashboard Data:', JSON.stringify(dashboardData, null, 2));
+        }
+    }, [dashboardData]);
+
     if (isLoadingClass || isLoadingDashboard) {
         return <ClassDetailsSkeleton />;
     }
@@ -206,13 +213,141 @@ export default function ClassDetails() {
                                 <Text className="text-indigo-700 dark:text-indigo-300 font-bold ml-2">Next Session</Text>
                             </View>
                             <Text className="text-gray-800 dark:text-gray-100 text-lg font-bold">
-                                {new Date(dashboardData.nextSession.date).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
+                                {new Date(dashboardData.nextSession.scheduledDateTime).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
                             </Text>
                             <Text className="text-gray-600 dark:text-gray-400">
-                                {new Date(dashboardData.nextSession.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                                {new Date(dashboardData.nextSession.scheduledDateTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                             </Text>
                         </View>
                     )}
+
+                    {/* Comprehensive Statistics Dashboard */}
+                    <View className="mb-6">
+                        {/* Sessions Overview */}
+                        <View className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm mb-4 border border-gray-100 dark:border-gray-700">
+                            <View className="flex-row items-center mb-4 pb-3 border-b border-gray-100 dark:border-gray-700">
+                                <View className="bg-indigo-100 dark:bg-indigo-900 p-2 rounded-xl mr-3">
+                                    <Ionicons name="calendar" size={20} color="#4F46E5" />
+                                </View>
+                                <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">
+                                    Sessions Overview
+                                </Text>
+                            </View>
+                            <View className="flex-row justify-around">
+                                <View className="items-center flex-1">
+                                    <Text className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">
+                                        {dashboardData?.totalSessions ?? 0}
+                                    </Text>
+                                    <Text className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                        Total Sessions
+                                    </Text>
+                                </View>
+                                <View className="w-px bg-gray-200 dark:bg-gray-700" />
+                                <View className="items-center flex-1">
+                                    <Text className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
+                                        {dashboardData?.completedSessions ?? 0}
+                                    </Text>
+                                    <Text className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                        Completed
+                                    </Text>
+                                </View>
+                            </View>
+                        </View>
+
+                        {/* Attendance Breakdown */}
+                        <View className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm mb-4 border border-gray-100 dark:border-gray-700">
+                            <View className="flex-row items-center mb-4 pb-3 border-b border-gray-100 dark:border-gray-700">
+                                <View className="bg-emerald-100 dark:bg-emerald-900 p-2 rounded-xl mr-3">
+                                    <Ionicons name="people" size={20} color="#10B981" />
+                                </View>
+                                <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">
+                                    Attendance Breakdown
+                                </Text>
+                            </View>
+                            <View className="space-y-3">
+                                <View className="flex-row justify-between items-center">
+                                    <View className="flex-row items-center">
+                                        <View className="w-3 h-3 rounded-full bg-emerald-500 mr-2" />
+                                        <Text className="text-gray-700 dark:text-gray-300">Present</Text>
+                                    </View>
+                                    <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">
+                                        {dashboardData?.totalPresentCount ?? 0}
+                                    </Text>
+                                </View>
+                                <View className="flex-row justify-between items-center">
+                                    <View className="flex-row items-center">
+                                        <View className="w-3 h-3 rounded-full bg-amber-500 mr-2" />
+                                        <Text className="text-gray-700 dark:text-gray-300">Late</Text>
+                                    </View>
+                                    <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">
+                                        {dashboardData?.totalLateCount ?? 0}
+                                    </Text>
+                                </View>
+                                <View className="flex-row justify-between items-center">
+                                    <View className="flex-row items-center">
+                                        <View className="w-3 h-3 rounded-full bg-red-500 mr-2" />
+                                        <Text className="text-gray-700 dark:text-gray-300">Absent</Text>
+                                    </View>
+                                    <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">
+                                        {dashboardData?.totalAbsentCount ?? 0}
+                                    </Text>
+                                </View>
+                                <View className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                                    <View className="flex-row justify-between items-center">
+                                        <Text className="text-gray-700 dark:text-gray-300 font-semibold">Attendance Rate</Text>
+                                        <Text className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                                            {Math.round(dashboardData?.overallAttendanceRate ?? 0)}%
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+
+                        {/* Assignments Overview */}
+                        <View className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm mb-4 border border-gray-100 dark:border-gray-700">
+                            <View className="flex-row items-center mb-4 pb-3 border-b border-gray-100 dark:border-gray-700">
+                                <View className="bg-blue-100 dark:bg-blue-900 p-2 rounded-xl mr-3">
+                                    <Ionicons name="document-text" size={20} color="#3B82F6" />
+                                </View>
+                                <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">
+                                    Assignments Overview
+                                </Text>
+                            </View>
+                            <View className="flex-row justify-around mb-4">
+                                <View className="items-center flex-1">
+                                    <Text className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                                        {dashboardData?.totalAssignments ?? 0}
+                                    </Text>
+                                    <Text className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                        Total Assignments
+                                    </Text>
+                                </View>
+                                <View className="w-px bg-gray-200 dark:bg-gray-700" />
+                                <View className="items-center flex-1">
+                                    <Text className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                                        {dashboardData?.totalSubmissions ?? 0}
+                                    </Text>
+                                    <Text className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                        Submissions
+                                    </Text>
+                                </View>
+                            </View>
+                            <View className="pt-3 border-t border-gray-100 dark:border-gray-700">
+                                <View className="flex-row justify-between items-center mb-2">
+                                    <Text className="text-gray-700 dark:text-gray-300">Submission Rate</Text>
+                                    <Text className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                                        {Math.round(dashboardData?.submissionRate ?? 0)}%
+                                    </Text>
+                                </View>
+                                <View className="flex-row justify-between items-center">
+                                    <Text className="text-gray-700 dark:text-gray-300">Average Grade</Text>
+                                    <Text className="text-xl font-bold text-purple-600 dark:text-purple-400">
+                                        {(dashboardData?.averageGrade ?? 0).toFixed(1)}
+                                    </Text>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
 
                     <TouchableOpacity
                         onPress={() => router.push(`/class/${id}/sessions`)}

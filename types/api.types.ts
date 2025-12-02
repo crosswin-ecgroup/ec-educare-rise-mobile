@@ -132,21 +132,21 @@ export interface UpdateSingleSessionDto {
 export interface ClassDashboardDto {
     classId: string;
     className: string;
-    subject: string;
-    standard: string;
-    section: string;
-    studentCount: number;
+    totalStudents: number;
+    totalSessions: number;
+    completedSessions: number;
+    totalAssignments: number;
+    totalSubmissions: number;
+    overallAttendanceRate: number;
+    totalPresentCount: number;
+    totalLateCount: number;
+    totalAbsentCount: number;
+    submissionRate: number;
+    averageGrade: number;
     nextSession?: ClassSession;
-    recentSessions?: ClassSession[];
-    attendanceSummary?: {
-        totalSessions: number;
-        averageAttendance: number;
-    };
-    teachers?: Teacher[];
-    students?: Student[];
-    telegramGroupLink?: string;
-    dayOfWeek?: string | string[];
-    sessionTime?: string;
-    startDate?: string;
-    endDate?: string;
+    recentSessions?: any[];
+    recentAssignments?: any[];
+    attendanceTrend?: any[];
+    gradeDistribution?: any[];
+    studentPerformances?: any[];
 }
