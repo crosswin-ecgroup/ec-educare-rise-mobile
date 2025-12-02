@@ -38,7 +38,7 @@ export interface Class {
     studentCount?: number;
     startDate?: string;
     endDate?: string;
-    sessionTime?: string;
+    sessionTime?: TimeSpan;
     dayOfWeek?: string | string[];
     teachers?: Teacher[];
     students?: Student[];

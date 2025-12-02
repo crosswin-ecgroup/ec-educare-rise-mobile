@@ -3102,6 +3102,54 @@
                 }
             }
         },
+        "/api/Students/bulk-promote": {
+            "post": {
+                "tags": [
+                    "Students"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BulkPromoteRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BulkPromoteRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BulkPromoteRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BulkPromoteResult"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BulkPromoteResult"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BulkPromoteResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/Teachers": {
             "post": {
                 "tags": [
@@ -3348,6 +3396,37 @@
                 }
             }
         },
+        "/api/TelegramAuth/sync-user-ids": {
+            "post": {
+                "tags": [
+                    "TelegramAuth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SyncUserIdsRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SyncUserIdsRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SyncUserIdsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
         "/api/telegram/webhook": {
             "post": {
                 "tags": [
@@ -3372,6 +3451,40 @@
                         }
                     }
                 },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "TelegramWebhook"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/api/telegram/webhook/info": {
+            "get": {
+                "tags": [
+                    "TelegramWebhook"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/api/telegram/webhook/setup": {
+            "post": {
+                "tags": [
+                    "TelegramWebhook"
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -3659,6 +3772,73 @@
                 },
                 "additionalProperties": false
             },
+            "AssignmentSubmissionDetailDto": {
+                "type": "object",
+                "properties": {
+                    "submissionId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "submissionText": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "fileUrl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "imageUrl": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "submittedOn": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "attemptNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "isProcessed": {
+                        "type": "boolean"
+                    },
+                    "score": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "grade": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "feedback": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "strengths": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "areasForImprovement": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "suggestions": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "feedbackGeneratedOn": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "generatedBy": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
             "AssignmentSubmissionSummaryDto": {
                 "type": "object",
                 "properties": {
@@ -3804,6 +3984,14 @@
                         "type": "string",
                         "nullable": true
                     },
+                    "studentEmail": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "studentMobile": {
+                        "type": "string",
+                        "nullable": true
+                    },
                     "title": {
                         "type": "string",
                         "nullable": true
@@ -3819,6 +4007,10 @@
                     "assignedOn": {
                         "type": "string",
                         "format": "date-time"
+                    },
+                    "maxScore": {
+                        "type": "number",
+                        "format": "double"
                     },
                     "status": {
                         "type": "string",
@@ -3849,6 +4041,13 @@
                     "submissionCount": {
                         "type": "integer",
                         "format": "int32"
+                    },
+                    "submissions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AssignmentSubmissionDetailDto"
+                        },
+                        "nullable": true
                     }
                 },
                 "additionalProperties": false
@@ -3971,6 +4170,49 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/AttendanceItemDto"
+                        },
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "BulkPromoteRequest": {
+                "type": "object",
+                "properties": {
+                    "fromGrade": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "toGrade": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "BulkPromoteResult": {
+                "type": "object",
+                "properties": {
+                    "totalStudents": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "promotedCount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "fromGrade": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "toGrade": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "promotedStudentNames": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
                         },
                         "nullable": true
                     }
@@ -5319,6 +5561,18 @@
                     "generatedBy": {
                         "type": "string",
                         "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "SyncUserIdsRequest": {
+                "type": "object",
+                "properties": {
+                    "syncStudents": {
+                        "type": "boolean"
+                    },
+                    "syncTeachers": {
+                        "type": "boolean"
                     }
                 },
                 "additionalProperties": false

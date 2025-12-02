@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { TodaysClassesSkeleton } from '../../components/skeletons/TodaysClassesSkeleton';
 import { useGetClassesQuery } from '../../services/classes.api';
 import { useAuthStore } from '../../store/auth.store';
+import { getSubjectIcon } from '../../utils/subjectIcons';
 
 export default function Dashboard() {
     const router = useRouter();
@@ -163,9 +164,9 @@ export default function Dashboard() {
                                 {todaysClasses.slice(0, showAllClasses ? todaysClasses.length : 5).map((item, index) => {
                                     // Safe time formatting with AM/PM
                                     let timeDisplay = 'View';
-                                    if (item.sessionTime && item.sessionTime.hours !== undefined) {
-                                        const hours = item.sessionTime.hours;
-                                        const minutes = item.sessionTime.minutes || 0;
+                                    if (item.sessionTime) {
+                                        const hours = item.sessionTime.hours ?? 0;
+                                        const minutes = item.sessionTime.minutes ?? 0;
                                         const period = hours >= 12 ? 'PM' : 'AM';
                                         const displayHours = hours % 12 || 12;
                                         timeDisplay = `${displayHours}:${String(minutes).padStart(2, '0')} ${period}`;
@@ -185,9 +186,7 @@ export default function Dashboard() {
                                         >
                                             <View className="w-1 bg-green-500 h-full absolute left-0 rounded-l-2xl" />
                                             <View className="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-900/30 items-center justify-center ml-2">
-                                                <Text className="text-xl font-bold text-green-600 dark:text-green-400">
-                                                    {item.name.charAt(0).toUpperCase()}
-                                                </Text>
+                                                <Ionicons name={getSubjectIcon(item.subject)} size={24} color="#10B981" />
                                             </View>
                                             <View className="flex-1 ml-4">
                                                 <Text className="text-base font-bold text-gray-800 dark:text-gray-100">
