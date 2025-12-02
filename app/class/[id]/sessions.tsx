@@ -1,19 +1,44 @@
 import { LoadingOverlay } from '@/components/LoadingOverlay';
+import { useDeleteSessionMutation } from '@/services/classes.api';
 import { useGetSessionsQuery } from '@/services/sessions.api';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
-import { FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
 
 export default function ClassSessions() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const router = useRouter();
     const { data: sessions, isLoading, refetch, isFetching } = useGetSessionsQuery(id || '');
+    const [deleteSession, { isLoading: isDeleting }] = useDeleteSessionMutation();
 
     if (isLoading) {
         return <LoadingOverlay />;
     }
+
+    const handleDeleteSession = (sessionId: string) => {
+        Alert.alert(
+            'Delete Session',
+            'Are you sure you want to delete this session? This action cannot be undone.',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                    text: 'Delete',
+                    style: 'destructive',
+                    onPress: async () => {
+                        try {
+                            await deleteSession({ classId: id || '', sessionId }).unwrap();
+                            // Refetch is handled by tag invalidation
+                        } catch (error) {
+                            console.error('Failed to delete session:', error);
+                            Alert.alert('Error', 'Failed to delete session');
+                        }
+                    }
+                }
+            ]
+        );
+    };
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -36,6 +61,7 @@ export default function ClassSessions() {
 
     return (
         <View className="flex-1 bg-gray-50 dark:bg-gray-900">
+            {isDeleting && <LoadingOverlay />}
             {/* Header */}
             <LinearGradient
                 colors={['#4F46E5', '#3730A3']}
@@ -78,10 +104,18 @@ export default function ClassSessions() {
                                     {formatDate(item.scheduledDateTime)} • {formatTime(item.scheduledDateTime)}
                                 </Text>
                             </View>
-                            <View className={`px-3 py-1 rounded-full ${getStatusColor(item.status).split(' ')[1]}`}>
-                                <Text className={`text-xs font-bold uppercase ${getStatusColor(item.status).split(' ')[0]}`}>
-                                    {item.status || 'Scheduled'}
-                                </Text>
+                            <View className="flex-row items-center">
+                                <View className={`px-3 py-1 rounded-full mr-2 ${getStatusColor(item.status).split(' ')[1]}`}>
+                                    <Text className={`text-xs font-bold uppercase ${getStatusColor(item.status).split(' ')[0]}`}>
+                                        {item.status || 'Scheduled'}
+                                    </Text>
+                                </View>
+                                <TouchableOpacity
+                                    onPress={() => handleDeleteSession(item.classSessionId)}
+                                    className="p-1"
+                                >
+                                    <Ionicons name="trash-outline" size={20} color="#EF4444" />
+                                </TouchableOpacity>
                             </View>
                         </View>
 

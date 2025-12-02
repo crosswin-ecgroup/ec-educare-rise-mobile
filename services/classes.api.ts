@@ -57,6 +57,27 @@ export const classesApi = api.injectEndpoints({
             query: (classId) => `/classes/${classId}/materials`,
             providesTags: (result, error, classId) => [{ type: 'Classes', id: classId }],
         }),
+        updateClassSchedule: builder.mutation<void, { classId: string; data: any }>({
+            query: ({ classId, data }) => ({
+                url: `/classes/${classId}/schedule/update`,
+                method: 'PUT',
+                body: data,
+            }),
+            invalidatesTags: (result, error, { classId }) => [
+                { type: 'Classes', id: classId },
+                { type: 'Sessions' }
+            ],
+        }),
+        deleteSession: builder.mutation<void, { classId: string; sessionId: string }>({
+            query: ({ classId, sessionId }) => ({
+                url: `/classes/${classId}/schedule/sessions/${sessionId}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: (result, error, { classId }) => [
+                { type: 'Classes', id: classId },
+                { type: 'Sessions' }
+            ],
+        }),
     }),
 });
 
@@ -70,4 +91,6 @@ export const {
     useRemoveTeacherFromClassMutation,
     useRemoveStudentFromClassMutation,
     useGetMaterialsQuery,
+    useUpdateClassScheduleMutation,
+    useDeleteSessionMutation,
 } = classesApi;

@@ -1,16 +1,15 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { View, Image, StyleSheet, Dimensions } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
+import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
-    useSharedValue,
-    useAnimatedStyle,
-    withTiming,
-    runOnJS,
-    withSequence,
-    withSpring,
-    withDelay,
     Easing,
-    interpolate
+    interpolate,
+    runOnJS,
+    useAnimatedStyle,
+    useSharedValue,
+    withDelay,
+    withSpring,
+    withTiming
 } from 'react-native-reanimated';
 
 // Keep the splash screen visible while we fetch resources
@@ -78,21 +77,17 @@ export function AnimatedSplashScreen({ children, image }: AnimatedSplashScreenPr
         }
     }, []);
 
-    const animatedStyle = useAnimatedStyle(() => {
-        return {
-            opacity: opacity.value,
-            transform: [
-                { scale: scale.value },
-                { translateY: translateY.value }
-            ],
-        };
-    });
+    const animatedLogoStyle = useAnimatedStyle(() => ({
+        opacity: opacity.value,
+        transform: [
+            { scale: scale.value },
+            { translateY: translateY.value }
+        ],
+    }));
 
-    const backgroundStyle = useAnimatedStyle(() => {
-        return {
-            opacity: interpolate(opacity.value, [0, 1], [1, 1]),
-        };
-    });
+    const animatedTextStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(opacity.value, [0, 1], [1, 1]),
+    }));
 
     if (!isAppReady) {
         return null;
@@ -110,7 +105,7 @@ export function AnimatedSplashScreen({ children, image }: AnimatedSplashScreenPr
                             alignItems: 'center',
                             justifyContent: 'center'
                         },
-                        backgroundStyle
+                        animatedTextStyle // Assuming animatedTextStyle is meant for the background or a container
                     ]}
                 >
                     <Animated.Image
@@ -121,7 +116,7 @@ export function AnimatedSplashScreen({ children, image }: AnimatedSplashScreenPr
                                 height: 200,
                                 resizeMode: 'contain'
                             },
-                            animatedStyle,
+                            animatedLogoStyle,
                         ]}
                         onLoadEnd={onImageLoaded}
                     />

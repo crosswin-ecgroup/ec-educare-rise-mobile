@@ -254,10 +254,11 @@ export default function ClassDetails() {
                     </TouchableOpacity >
 
                     <ClassSchedule
-                        startDate={classData.startDate || ''}
-                        endDate={classData.endDate || ''}
-                        sessionTime={classData.sessionTime || ''}
-                        dayOfWeek={classData.dayOfWeek ? [classData.dayOfWeek] : []}
+                        classId={id || ''}
+                        startDate={classData?.startDate || ''}
+                        endDate={classData?.endDate || ''}
+                        sessionTime={classData?.sessionTime}
+                        dayOfWeek={classData?.dayOfWeek ? classData.dayOfWeek.split(',') : []}
                     />
 
                     <MaterialList materials={materials || []} />

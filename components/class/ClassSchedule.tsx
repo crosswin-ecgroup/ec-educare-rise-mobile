@@ -1,15 +1,22 @@
+import { useUpdateClassScheduleMutation } from '@/services/classes.api';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import { Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
+import { EditScheduleModal } from './EditScheduleModal';
 
 interface ClassScheduleProps {
+    classId: string;
     startDate: string;
     endDate: string;
     sessionTime: any;
     dayOfWeek?: string[];
+    sessionDurationMinutes?: number;
 }
 
-export const ClassSchedule = ({ startDate, endDate, sessionTime, dayOfWeek }: ClassScheduleProps) => {
+export const ClassSchedule = ({ classId, startDate, endDate, sessionTime, dayOfWeek, sessionDurationMinutes }: ClassScheduleProps) => {
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+    const [updateSchedule, { isLoading: isUpdating }] = useUpdateClassScheduleMutation();
+
     const formatDate = (dateString: string) => {
         if (!dateString) return 'N/A';
         const [year, month, day] = dateString.split('T')[0].split('-');
@@ -23,15 +30,34 @@ export const ClassSchedule = ({ startDate, endDate, sessionTime, dayOfWeek }: Cl
         return `${hours}h ${minutes}m`;
     };
 
+    const handleUpdateSchedule = async (data: any) => {
+        try {
+            await updateSchedule({ classId, data }).unwrap();
+            setIsEditModalVisible(false);
+            Alert.alert('Success', 'Class schedule updated successfully');
+        } catch (error) {
+            console.error('Failed to update schedule:', error);
+            Alert.alert('Error', 'Failed to update class schedule');
+        }
+    };
+
     return (
         <View className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm mb-6 border border-gray-100 dark:border-gray-700">
-            <View className="flex-row items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
-                <View className="bg-purple-100 dark:bg-purple-900 p-2 rounded-xl mr-3">
-                    <Ionicons name="calendar" size={20} color="#8B5CF6" />
+            <View className="flex-row items-center justify-between mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
+                <View className="flex-row items-center">
+                    <View className="bg-purple-100 dark:bg-purple-900 p-2 rounded-xl mr-3">
+                        <Ionicons name="calendar" size={20} color="#8B5CF6" />
+                    </View>
+                    <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">
+                        Schedule
+                    </Text>
                 </View>
-                <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">
-                    Schedule
-                </Text>
+                <TouchableOpacity
+                    onPress={() => setIsEditModalVisible(true)}
+                    className="bg-gray-100 dark:bg-gray-700 p-2 rounded-full"
+                >
+                    <Ionicons name="pencil" size={18} color="#4B5563" />
+                </TouchableOpacity>
             </View>
 
             <View>
@@ -73,6 +99,20 @@ export const ClassSchedule = ({ startDate, endDate, sessionTime, dayOfWeek }: Cl
                     </View>
                 )}
             </View>
+
+            <EditScheduleModal
+                visible={isEditModalVisible}
+                onClose={() => setIsEditModalVisible(false)}
+                onSave={handleUpdateSchedule}
+                initialData={{
+                    startDate,
+                    endDate,
+                    dayOfWeek: dayOfWeek || [],
+                    sessionTime,
+                    sessionDurationMinutes
+                }}
+                isLoading={isUpdating}
+            />
         </View>
     );
 };

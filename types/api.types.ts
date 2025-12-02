@@ -114,3 +114,17 @@ export interface SessionAttendance {
     notes?: string;
     createdOn: string;
 }
+
+export interface UpdateSessionScheduleDto {
+    newStartDate?: string; // ISO date-time string
+    newEndDate?: string; // ISO date-time string
+    dayOfWeek?: string[] | null;
+    sessionTime?: any; // TimeSpan object
+    sessionDurationMinutes?: number;
+}
+
+export interface UpdateSingleSessionDto {
+    newDate?: string; // ISO date-time string
+    newTime?: any; // TimeSpan object
+    newDurationMinutes?: number;
+}
