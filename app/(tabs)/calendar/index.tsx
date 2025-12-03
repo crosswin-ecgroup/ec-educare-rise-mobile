@@ -1,4 +1,4 @@
-import { LoadingOverlay } from '@/components/LoadingOverlay';
+import { CalendarSkeleton } from '@/components/skeletons/CalendarSkeleton';
 import { useGetClassesQuery } from '@/services/classes.api';
 import { getSubjectIcon } from '@/utils/subjectIcons';
 import { Ionicons } from '@expo/vector-icons';
@@ -115,7 +115,7 @@ export default function CalendarScreen() {
         return `${day}/${month}/${year}`;
     };
 
-    if (isLoading) return <LoadingOverlay />;
+    if (isLoading) return <CalendarSkeleton />;
 
     return (
         <View className="flex-1 bg-gray-50 dark:bg-gray-900">
