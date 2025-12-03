@@ -39,6 +39,8 @@ export const DashboardSkeleton = () => {
                 ))}
             </View>
 
+
+
             {/* Class Performance Skeleton */}
             <View className="mb-8">
                 <Animated.View className="w-48 h-6 rounded bg-gray-200 dark:bg-gray-700 mb-4" style={{ opacity }} />

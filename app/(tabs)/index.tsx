@@ -113,7 +113,7 @@ export default function Dashboard() {
                     )}
 
                     {/* Interesting Content */}
-                    <View className="mb-8">
+                    {!reportLoading && <View className="mb-8">
                         <Text className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
                             Did You Know?
                         </Text>
@@ -130,9 +130,8 @@ export default function Dashboard() {
                                 </Text>
                             </View>
                         </View>
-                    </View>
+                    </View>}
 
-                    {/* Today's Classes Section */}
                     {/* Class Performance Summary */}
                     <View className="mb-8">
                         <Text className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
