@@ -196,6 +196,21 @@ export interface AssignmentGroupSummaryDto {
     averageGrade?: number;
 }
 
+export interface AssignmentSubmissionDetailDto {
+    submissionId: string;
+    submissionText?: string;
+    fileUrl?: string;
+    imageUrl?: string;
+    submittedOn: string;
+    attemptNumber: number;
+    isProcessed: boolean;
+    score?: number;
+    grade?: string;
+    feedback?: string;
+    strengths?: string;
+    areasForImprovement?: string;
+}
+
 export interface AssignmentWithSubmissionDto {
     classStudentAssignmentId: string;
     classId: string;
@@ -212,8 +227,12 @@ export interface AssignmentWithSubmissionDto {
     status: string;
     submittedOn?: string;
     gradedOn?: string;
-    grade?: number;
+    score?: number;
+    grade?: string;
     feedback?: string;
+    isLate: boolean;
+    submissionCount: number;
+    submissions?: AssignmentSubmissionDetailDto[];
 }
 
 export interface StudentSummaryStatsDto {
