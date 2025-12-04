@@ -1,5 +1,6 @@
 import { CustomAlert } from '@/components/CustomAlert';
 import { LoadingOverlay } from '@/components/LoadingOverlay';
+import { SUBJECTS } from '@/constants/subjects';
 import { useCreateTeacherMutation } from '@/services/teachers.api';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -19,11 +20,7 @@ export default function CreateTeacher() {
     const [showSubjectPicker, setShowSubjectPicker] = useState(false);
     const [showQualificationPicker, setShowQualificationPicker] = useState(false);
 
-    const SUBJECTS = [
-        'Mathematics', 'Science', 'English', 'History', 'Geography',
-        'Physics', 'Chemistry', 'Biology', 'Computer Science', 'Art',
-        'Music', 'Physical Education'
-    ];
+
 
     const QUALIFICATIONS = [
         'B.Ed', 'M.Ed', 'B.Sc', 'M.Sc', 'B.A', 'M.A',
@@ -65,7 +62,7 @@ export default function CreateTeacher() {
             await createTeacher({
                 fullName: name,
                 email,
-                mobileNumber: phone ? `+91${phone}` : undefined,
+                mobileNumber: phone || undefined,
                 password: 'DefaultPassword123!',
             }).unwrap();
             showAlert('Success', 'Teacher created successfully!', 'success');
@@ -140,9 +137,7 @@ export default function CreateTeacher() {
 
                         <Text className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-2">Phone Number</Text>
                         <View className="flex-row items-center bg-gray-50 dark:bg-gray-900 rounded-xl mb-4 border border-gray-200 dark:border-gray-700 focus:border-blue-500 overflow-hidden">
-                            <View className="bg-gray-100 dark:bg-gray-800 px-4 py-4 border-r border-gray-200 dark:border-gray-700">
-                                <Text className="text-gray-600 dark:text-gray-300 font-medium">+91</Text>
-                            </View>
+
                             <TextInput
                                 className="flex-1 p-4 text-gray-800 dark:text-gray-100"
                                 placeholder="9876543210"

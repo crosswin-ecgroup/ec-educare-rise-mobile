@@ -27,7 +27,8 @@ export const CalendarSkeleton = () => {
     });
 
     return (
-        <View className="flex-1 bg-gray-50 dark:bg-gray-900">
+
+        <View className="flex-1">
             {/* Calendar Placeholder */}
             <View className="mx-4 mt-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 border border-gray-100 dark:border-gray-700 h-80">
                 <View className="flex-row justify-between mb-4">

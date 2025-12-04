@@ -76,10 +76,19 @@ export interface CreateClassDto {
     name?: string;
     subject?: string;
     standard?: string;
+    academicYear?: string;
     startDate: string;
     endDate: string;
     dayOfWeek?: string[];
     sessionTime?: TimeSpan;
+    sessionDurationMinutes?: number;
+}
+
+export interface UpdateClassDto {
+    name?: string;
+    subject?: string;
+    standard?: string;
+    academicYear?: string;
 }
 
 export interface ClassSession {

@@ -1,4 +1,4 @@
-import { Class, ClassDashboardDto, CreateClassDto, UpdateSessionScheduleDto } from '@/types/api.types';
+import { Class, ClassDashboardDto, CreateClassDto, UpdateClassDto, UpdateSessionScheduleDto } from '@/types/api.types';
 import { api } from './api.base';
 
 export const classesApi = api.injectEndpoints({
@@ -22,6 +22,17 @@ export const classesApi = api.injectEndpoints({
                 body,
             }),
             invalidatesTags: ['Classes'],
+        }),
+        updateClass: builder.mutation<Class, { id: string; body: UpdateClassDto }>({
+            query: ({ id, body }) => ({
+                url: `/Classes/${id}`,
+                method: 'PUT',
+                body,
+            }),
+            invalidatesTags: (result, error, { id }) => [
+                { type: 'Classes', id },
+                { type: 'Classes', id: 'LIST' }
+            ],
         }),
         assignTeacher: builder.mutation<void, { classId: string; teacherId: string }>({
             query: ({ classId, teacherId }) => ({
@@ -105,6 +116,7 @@ export const {
     useGetClassByIdQuery,
     useGetClassDashboardQuery,
     useCreateClassMutation,
+    useUpdateClassMutation,
     useAssignTeacherMutation,
     useAddStudentToClassMutation,
     useRemoveTeacherFromClassMutation,

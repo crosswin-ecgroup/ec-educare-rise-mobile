@@ -35,7 +35,7 @@ export const ClassSchedule = ({ classId, startDate, endDate, sessionTime, dayOfW
 
     const handleUpdateSchedule = async (data: any) => {
         try {
-            await updateSchedule({ classId, data }).unwrap();
+            await updateSchedule({ classId, body: data }).unwrap();
             setIsEditModalVisible(false);
             showAlert({
                 title: 'Success',

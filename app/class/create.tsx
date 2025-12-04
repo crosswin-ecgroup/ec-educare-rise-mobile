@@ -8,6 +8,8 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
+import { SUBJECTS } from '@/constants/subjects';
+
 const GRADES = [
     '1st Grade', '2nd Grade', '3rd Grade', '4th Grade', '5th Grade',
     '6th Grade', '7th Grade', '8th Grade', '9th Grade', '10th Grade',
@@ -26,6 +28,7 @@ export default function CreateClass() {
     const [showStartPicker, setShowStartPicker] = useState(false);
     const [showEndPicker, setShowEndPicker] = useState(false);
     const [showGradePicker, setShowGradePicker] = useState(false);
+    const [showSubjectPicker, setShowSubjectPicker] = useState(false);
     // Duration
     const [durationHours, setDurationHours] = useState('1');
     const [durationMinutes, setDurationMinutes] = useState('0');
@@ -74,10 +77,7 @@ export default function CreateClass() {
         }
 
         try {
-            const sessionTime = {
-                totalHours: parseInt(durationHours) + (parseInt(durationMinutes) / 60),
-                totalMinutes: (parseInt(durationHours) * 60) + parseInt(durationMinutes)
-            };
+            const totalMinutes = (parseInt(durationHours) * 60) + parseInt(durationMinutes);
 
             await createClass({
                 name,
@@ -86,7 +86,8 @@ export default function CreateClass() {
                 startDate: startDate.toISOString(),
                 endDate: endDate.toISOString(),
                 dayOfWeek: selectedDays,
-                sessionTime
+                sessionDurationMinutes: totalMinutes,
+                academicYear: '2025-2026'
             }).unwrap();
 
             showAlert('Success', 'Class created successfully!', 'success');
@@ -150,13 +151,36 @@ export default function CreateClass() {
                         />
 
                         <Text className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-2">Subject</Text>
-                        <TextInput
-                            className="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl mb-4 text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 focus:border-blue-500"
-                            placeholder="e.g. Mathematics"
-                            placeholderTextColor="#9CA3AF"
-                            value={subject}
-                            onChangeText={setSubject}
-                        />
+                        <TouchableOpacity
+                            onPress={() => {
+                                setShowSubjectPicker(!showSubjectPicker);
+                                setShowGradePicker(false);
+                            }}
+                            className="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl mb-4 flex-row justify-between items-center border border-gray-200 dark:border-gray-700"
+                        >
+                            <Text className={subject ? "text-gray-800 dark:text-gray-100 font-medium" : "text-gray-400"}>
+                                {subject || 'Select subject'}
+                            </Text>
+                            <Ionicons name="chevron-down" size={20} color="#3B82F6" />
+                        </TouchableOpacity>
+                        {showSubjectPicker && (
+                            <View className="bg-gray-50 dark:bg-gray-900 rounded-xl mb-4 border border-gray-200 dark:border-gray-700 overflow-hidden" style={{ maxHeight: 200 }}>
+                                <ScrollView nestedScrollEnabled={true}>
+                                    {SUBJECTS.map((s) => (
+                                        <TouchableOpacity
+                                            key={s}
+                                            onPress={() => {
+                                                setSubject(s);
+                                                setShowSubjectPicker(false);
+                                            }}
+                                            className="p-4 border-b border-gray-200 dark:border-gray-700 active:bg-blue-50 dark:active:bg-blue-900/20"
+                                        >
+                                            <Text className="text-gray-800 dark:text-gray-100 font-medium">{s}</Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </ScrollView>
+                            </View>
+                        )}
 
                         <Text className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase mb-2">Standard/Grade</Text>
                         <TouchableOpacity
